@@ -4,3 +4,4 @@ __pycache__/
 .env
 workspace/*
 !workspace/.gitkeep
+mcp_file_server.log
