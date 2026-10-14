@@ -1,6 +1,8 @@
 import logging
 from pathlib import Path
 from mcp.server import MCPServer
+import uvicorn
+from mcp.server.transport_security import TransportSecuritySettings
 
 mcp = MCPServer("MCP File Server")
 
@@ -311,4 +313,12 @@ def save_checkpoint(task: str, completed: str, remaining: str) -> str:
         return f"Error: could not save checkpoint: {exc}"
 
 if __name__ == "__main__":
-    mcp.run(transport="streamable-http")
+    security = TransportSecuritySettings(
+        allowed_hosts=[
+            "basis-gangway-silica.ngrok-free.dev",
+            "localhost:*",
+            "127.0.0.1:*",
+        ],
+    )
+    app = mcp.streamable_http_app(transport_security=security)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
